@@ -139,14 +139,12 @@ def run(options):
     if options.save_attention:
         logger.info('Saving attentions...')
         logger.info('Saving to: {}'.format(options.save_attention))
-
-        ds_iterator = dev_iter
-        if options.test_path is not None:
-            ds_iterator = iterator.build(test_dataset,
-                                         device=options.gpu_id,
-                                         batch_size=1,
-                                         is_train=False,
-                                         lazy=options.lazy_loading)
+        dataset_for_iter = test_dataset if options.test_path else dev_dataset
+        ds_iterator = iterator.build(dataset_for_iter,
+                                     device=options.gpu_id,
+                                     batch_size=1,
+                                     is_train=False,
+                                     lazy=options.lazy_loading)
         save_attention(options.save_attention, model, ds_iterator)
 
     return fields_tuples, model, optim, sched

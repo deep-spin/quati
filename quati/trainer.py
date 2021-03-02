@@ -205,11 +205,7 @@ class Trainer:
         stats.calc(self.current_epoch)
 
     def save(self, current_epoch):
-        old_dir = 'epoch_{}'.format(self.last_saved_epoch)
-        old_path = Path(self.output_dir, old_dir)
-        if old_path.exists() and old_path.is_dir():
-            logger.info('Removing old state {}'.format(old_path))
-            shutil.rmtree(str(old_path))
+        self.remove_epoch(self.last_saved_epoch)
         epoch_dir = 'epoch_{}'.format(current_epoch)
         output_path = Path(self.output_dir, epoch_dir)
         output_path.mkdir(exist_ok=True)
@@ -224,6 +220,13 @@ class Trainer:
         models.load_state(directory, self.model)
         optimizer.load_state(directory, self.optimizer)
         scheduler.load_state(directory, self.scheduler)
+
+    def remove_epoch(self, epoch):
+        old_epoch_dir = 'epoch_{}'.format(epoch)
+        old_epoch_path = Path(self.output_dir, old_epoch_dir)
+        if old_epoch_path.exists() and old_epoch_path.is_dir():
+            logger.info('Removing old state {}'.format(old_epoch_path))
+            shutil.rmtree(str(old_epoch_path))
 
     def restore_epoch(self, epoch):
         epoch_dir = 'epoch_{}'.format(epoch)
