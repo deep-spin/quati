@@ -18,7 +18,8 @@ class Predicter:
         self.model.eval()
         predictions = []
         with torch.no_grad():
-            for batch in self.dataset_iter:
+            for i, batch in enumerate(self.dataset_iter):
+                print('{} of {}'.format(i, len(self.dataset_iter)), end='\r')
                 mask = torch.ne(batch.words, constants.PAD_ID)
                 if pred_type == 'classes':
                     preds = unmask(self.model.predict_classes(batch),
